@@ -5,8 +5,14 @@ import { AppModule } from '../src/app.module';
 import { CreateReviewDto } from '../src/review/dto/create-review.dto';
 import { Types, disconnect } from 'mongoose';
 import { REVIEW_NOT_FOUND } from '../src/review/review.constans';
+import { AuthDto } from 'src/auth/dto/auth.dto';
 
 const productId = new Types.ObjectId().toHexString();
+
+const loginDto: AuthDto = {
+  login: 'b2@a.ru',
+  password: '1',
+};
 
 const testDto: CreateReviewDto = {
   name: 'Тест',
@@ -20,6 +26,7 @@ const testDto: CreateReviewDto = {
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let createdId: string;
+  let token: string;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -28,6 +35,12 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    const { body } = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send(loginDto);
+
+    token = body.access_token;
   });
 
   it('/review/create (POST) - success', async (done) => {
@@ -47,11 +60,7 @@ describe('AppController (e2e)', () => {
       .post('/review/create')
       .send({ ...testDto, rating: 0 })
       .expect(400)
-      .then(({ body }: request.Response) => {
-        //expect(body.length).toBe(1);
-        console.log(body);
-        done();
-      });
+      .then(() => done());
   });
 
   it('/review/byProduct/:productId (GET) - success', async (done) => {
@@ -77,12 +86,14 @@ describe('AppController (e2e)', () => {
   it('/review/:id (DELETE) - success', () => {
     return request(app.getHttpServer())
       .delete('/review/' + createdId)
+      .set('Authorization', 'Bearer ' + token)
       .expect(200);
   });
 
   it('/review/:id (DELETE) - failed', () => {
     return request(app.getHttpServer())
       .delete('/review/' + new Types.ObjectId().toHexString())
+      .set('Authorization', 'Bearer ' + token)
       .expect(404, {
         statusCode: 404,
         message: REVIEW_NOT_FOUND,
