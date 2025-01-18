@@ -25,6 +25,9 @@
     "@nestjs/config": "^1.1.6",
     "@nestjs/core": "^7.6.15",
     "@nestjs/platform-express": "^7.6.15",
+    "@typegoose/typegoose": "^7.4.8",
+    "mongoose": "^5.10.18",
+    "nestjs-typegoose": "^7.1.38",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6"
@@ -37,6 +40,7 @@
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.36",
     "@types/supertest": "^2.0.10",
+    "@types/mongoose": "^5.10.3",
     "jest": "^26.6.3",
     "prettier": "^2.2.1",
     "supertest": "^6.1.3",
