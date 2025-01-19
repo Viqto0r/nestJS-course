@@ -32,6 +32,8 @@ export class TopPageAdvantage {
 
 export interface TopPageModel extends Base {}
 export class TopPageModel extends TimeStamps {
+  typegooseName: string = 'TopPage';
+
   @prop({ enum: ETopLevelCategory })
   firstCategory: ETopLevelCategory;
 
