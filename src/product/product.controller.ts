@@ -1,3 +1,4 @@
+import { IdValidationPipe } from './../pipes/id-validation.pipe';
 import { ProductService } from './product.service';
 import {
   Body,
@@ -27,7 +28,7 @@ export class ProductController {
   }
 
   @Get(':id')
-  async get(@Param('id') id: string) {
+  async get(@Param('id', IdValidationPipe) id: string) {
     const product = await this.productService.findById(id);
 
     if (!product) {
@@ -38,7 +39,7 @@ export class ProductController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', IdValidationPipe) id: string) {
     const deletedProduct = await this.productService.deleteById(id);
 
     if (!deletedProduct) {
@@ -47,7 +48,10 @@ export class ProductController {
   }
 
   @Patch(':id')
-  async patch(@Param('id') id: string, @Body() dto: ProductModel) {
+  async patch(
+    @Param('id', IdValidationPipe) id: string,
+    @Body() dto: ProductModel,
+  ) {
     const updatedProduct = await this.productService.updateById(id, dto);
 
     if (!updatedProduct) {
