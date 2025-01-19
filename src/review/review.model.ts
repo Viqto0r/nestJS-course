@@ -4,6 +4,8 @@ import { Types } from 'mongoose';
 
 export interface ReviewModel extends Base {}
 export class ReviewModel extends TimeStamps {
+  typegooseName: string = 'Review';
+
   @prop()
   name: string;
 
