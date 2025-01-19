@@ -25,8 +25,37 @@ export class TopPageService {
   }
 
   async findByCategory(firstCategory: ETopLevelCategory) {
+    return (
+      this.topPageModel
+        .aggregate()
+        .match({
+          firstCategory,
+        })
+        .group({
+          _id: { secondCategory: '$secondCategory' },
+          pages: { $push: { alias: '$alias', title: '$title' } },
+        })
+        // Альтернативный синтаксис
+        //.aggregate([
+        //  {
+        //    $match: {
+        //      firstCategory,
+        //    },
+        //  },
+        //  {
+        //    $group: {
+        //      _id: { secondCategory: '$secondCategory' },
+        //      pages: { $push: { alias: '$alias', title: '$title' } },
+        //    },
+        //  },
+        //])
+        .exec()
+    );
+  }
+
+  async findByText(text: string) {
     return this.topPageModel
-      .find({ firstCategory }, { alias: 1, secondCategory: 1, title: 1 })
+      .find({ $text: { $search: text, $caseSensitive: false } })
       .exec();
   }
 
